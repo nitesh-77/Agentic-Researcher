@@ -1,0 +1,18 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic>=2.0.0
+requests
+beautifulsoup4
+# Core LangChain ecosystem
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-core>=0.3.0
+langchain-text-splitters>=0.3.0
+# Integrations
+langchain-mistralai>=0.2.0
+langchain-openai
+tiktoken
+streamlit  
+watchdog
+transformers
