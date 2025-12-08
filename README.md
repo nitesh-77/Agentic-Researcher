@@ -55,4 +55,4 @@ BROWSERLESS_API_KEY=your_browserless_io_key_here
 `chmod +x run.sh`
 
 ### 6. Run the application
-`./run.sh
+`./run.sh`
