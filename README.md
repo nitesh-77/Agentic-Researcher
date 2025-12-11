@@ -1,24 +1,51 @@
 # Agentic Researcher
 
-**Agentic Researcher** is an autonomous AI agent designed to perform deep, verifiable technical research. Unlike standard LLM chatbots that rely on hallucinations or surface-level search snippets, this agent orchestrates a multi-step workflow: it searches the web, critically evaluates sources, and autonomously scrapes full documentation to verify facts before answering.
+A fully autonomous, verifiable research agent powered by **LangGraph**, **Mistral AI**, and **Chainlit**. 
 
-Built with **Python**, **LangChain**, **Mistral AI**, and **FastAPI**, it solves the "lazy agent" problem by enforcing evidence-based reasoning.
+Agentic Researcher doesn't just "chat"—it plans, searches the live web, scrapes valid sources, builds a local knowledge base, writes comprehensive technical reports, and self-corrects its own work before presenting it to you.
 
-##  Key Features
+---
 
-* **🤖 Autonomous Decision Making:** The agent intelligently decides when to search, which links to filter, and when to scrape for more details.
-* **📉 Intelligent Noise Filtering:** It acts as a critical editor, analyzing search snippets to identify and select only the most authoritative sources (like official documentation) while discarding irrelevant clickbait.
-* **🕷️ Full-Text Scraping:** Equipped with a headless browser, the agent visits the selected URLs to render and read the actual page content—including complex JavaScript-heavy sites—ensuring no detail is missed.
-* **🧠 Mistral AI Integration:** Uses `mistral-small-latest` for high-speed, cost-effective reasoning and summarization.
-* **📊 Interactive UI:** Features a clean **Streamlit** frontend to visualize the research process in real-time.
+## 🚀 Key Features
 
-## 🛠️ Tech Stack
+* **🧠 Autonomous Planning:** Breaks down complex user queries into specific, researchable sub-topics.
+* **🔄 Self-Correcting Loop:** Includes a "Review Node" that evaluates the quality of the report. If the data is insufficient, it autonomously loops back to do more research.
+* **🕸️ Interactive Knowledge Graphs:** Automatically extracts entities (technologies, organizations, concepts) and generates an interactive HTML network graph to visualize connections.
+* **📄 PDF Report Generation:** Produces professional PDF reports with citations and metadata.
+* **📚 RAG-based Q&A:** After research is complete, the agent switches to "Expert Chat Mode," allowing you to ask follow-up questions based strictly on the collected data.
+* **🛡️ Quality Filters:** Automatically filters out low-quality sources (social media, spam) and uses fallback mechanisms for scraping failures.
 
-* **Core:** Python, LangChain
-* **LLM:** Mistral AI API
-* **Backend:** FastAPI
-* **Frontend:** Streamlit
-* **Tools:** Serper Dev (Search), Browserless (Scraping)
+## 🛠️ Technical Architecture
+
+The system is built on a cyclic graph architecture using **LangGraph**:
+
+```mermaid
+graph TD
+    A[Start] --> B[Plan Node]
+    B --> C[Research Node]
+    C --> D[Scrape Node]
+    D --> E[Write Node]
+    E --> F[Review Node]
+    F -->|Needs More Info| C
+    F -->|Report Complete| G[End]
+```
+
+## Project Structure
+```agentic-researcher/
+├── app.py              # Main Chainlit application entry point
+├── agent_graph/        # Core logic
+│   ├── graph.py        # LangGraph definition & workflow
+│   ├── nodes.py        # The specific functions (Plan, Research, Write, etc.)
+│   ├── states.py       # Pydantic/TypedDict state definitions
+│   └── global_state.py # Singleton for ChromaDB persistence
+├── utils/
+│   ├── pdf_gen.py      # PDF generation logic (xhtml2pdf)
+│   └── graph_viz.py    # Knowledge graph generation (NetworkX/Pyvis)
+├── tools/
+│   ├── search.py       # Serper API wrapper
+│   └── scraper.py      # Browserless API wrapper
+└── requirements.txt    # Project dependencies
+```
 
 ## ⚙️ Setup Instructions
 
@@ -51,8 +78,5 @@ MISTRAL_API_KEY=your_mistral_api_key_here
 SERP_API_KEY=your_serper_dev_key_here
 BROWSERLESS_API_KEY=your_browserless_io_key_here
 ```
-### 5. Make the script executable (only needed once on Linux/Mac)
-`chmod +x run.sh`
-
-### 6. Run the application
-`./run.sh`
+### 5. Run the application
+`chainlit run app/app.py`
